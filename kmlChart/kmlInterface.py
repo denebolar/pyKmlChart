@@ -66,10 +66,10 @@ class ShapeInterface(object):
 class AbstractShape(ShapeInterface):
     TAG = 'ABSTRACT'
 
-    def __init__(self, shapeID=None, styleURL=None, settings={}):
+    def __init__(self, shapeID=None, style=None, settings={}):
         ShapeInterface.__init__(self)
         self.shapeID = shapeID
-        self.styleURL = styleURL
+        self.style = style
         self.settings = settings
 
     def renderNode(self, xml):
@@ -79,8 +79,12 @@ class AbstractShape(ShapeInterface):
         xml = ElementTree.SubElement(xmlParent, self.TAG)
         if self.shapeID is not None:
             xml.attrib['id'] = self.shapeID
-        if self.styleURL is not None:
+        if isinstance(self.style, (str, unicode)):
             ElementTree.SubElement(xml, 'styleUrl').text = self.styleURL
+        if isinstance(self.style, (list, tuple)):
+            styleXml = ElementTree.SubElement(xml, 'Style')
+            for style in self.style:
+                _styleRenderer(styleXml, style)
         _renderDict(xml, self.settings)
         self.renderNode(xml)
         ShapeInterface.render(self, xml)
@@ -143,8 +147,8 @@ class MultiGeometry(AbstractShape):
 class Placemark(AbstractShape):
     TAG = 'Placemark'
 
-    def __init__(self, name=None, visibility=True, open=False, description=None, shapeID=None, styleURL=None):
-        AbstractShape.__init__(self, shapeID=shapeID, styleURL=styleURL)
+    def __init__(self, name=None, visibility=True, open=False, description=None, shapeID=None, style=None):
+        AbstractShape.__init__(self, shapeID=shapeID, style=style)
         self.settings = {
             'name': name,
             'visibility': 1 if visibility else 0,

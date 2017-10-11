@@ -50,9 +50,9 @@ class InterfaceTest( unittest.TestCase ):
         kml = KMLdata()
         kml.styles.addStyle('myStyle', (PolyStyle(color='ffff0000', outline=False), LineStyle(color='ff00ff00')))
         kml.add(Folder(name='TestFolder')
-            .add(Placemark('TestPlacemark', description='TestDescription', styleURL='#myStyle')
+            .add(Placemark('TestPlacemark', description='TestDescription', style='#myStyle')
                  .add(Polygon((i + (1000,) for i in c), extrude=True, altitudeMode='relativeToGround')))
-            .add(Placemark('TestPlacemark2', description='TestDescription2', styleURL='#myStyle')
+            .add(Placemark('TestPlacemark2', description='TestDescription2', style='#myStyle')
                  .add(Polygon((i + (1000,) for i in c2), extrude=True, altitudeMode='relativeToGround')))
         )
         #with open('test.kml', 'w') as f:
