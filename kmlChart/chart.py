@@ -35,14 +35,19 @@ class chart(object):
         self.title = title
 
     def save(self, filename):
-        """Saves the chart as KML file with filename filename.
+        """Save the chart as KML file with filename filename.
         """
         with open(filename, 'w') as f:
             f.write(self.kml.getAsString())
 
 
 class Bar3D(chart):
+    """Generate a three-dimensional bar graph.
+    """
     def add(self, lon_list, lat_list, z_list, colorbar=jet, radius=None, relativeToGround=False, display_name='MeasSeries'):
+        """Add a measurement series to the bar graph. lon_list is a list with N longitudes, lat_list a list with N latitudes,
+        and z_list a list of N altitudes. You may specify a custom cylinder radius of radius longitude degrees.
+        """
         folder = Folder(name=display_name)
         self.kml.add(folder)
         if radius is None:
@@ -71,8 +76,15 @@ class Bar3D(chart):
 
 
 class Surface(chart):
+    """Generate a surface plot.
+    """
     def add(self, corner_point_tuple_list, value_list, colorbar=jet, border_color=None, border_width=1, opacity=0xff, border_opacity=None,
             display_name='MeasSeries'):
+        """Add a measurement series to the surface plot. corner_point_tuple_list is a list of polygon corner points of the form
+        ((lon1, lat1), (lon2, lat2), ...) with N elements (meaning a list with N polygons described by M points (tuples), consisting
+        of two coordinates (lon, lat). Example: [((poly1_lon1, poly1_lat1), (poly1_lon2, poly1_lon2), (poly1_lon3, poly1_lon3)),
+        ((poly2_lon1, ...))])
+        """
         folder = Folder(name=display_name)
         self.kml.add(folder)
         if border_opacity is None:
