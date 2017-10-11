@@ -168,15 +168,22 @@ class Folder(Placemark):
 
 
 class KMLdata(ShapeInterface):
-    def __init__(self, styles=None):
+    def __init__(self, styles=None, name=None, description=None):
         """Class to produce the actual KML output.
         """
         super(KMLdata, self).__init__()
         self.styles = styles or StyleData()
+        self.settings = {
+            'name': name,
+            'open': 0,
+            'visibility': 1,
+            'description': description,
+        }
 
     def getAsString(self):
         root = ElementTree.Element(prefixedTag('kml'))
         document = ElementTree.SubElement(root, prefixedTag('Document'))
+        _renderDict(document, self.settings)
         self.styles.renderStyles(document)
         self.render(document)
         return '<?xml version="1.0" encoding="UTF-8"?>\n' + \
