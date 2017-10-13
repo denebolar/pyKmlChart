@@ -44,11 +44,12 @@ class chart(object):
 class Bar3D(chart):
     """Generate a three-dimensional bar graph.
     """
-    def add(self, lon_list, lat_list, z_list, colorbar=jet, radius=None, relativeToGround=False, display_name='MeasSeries'):
+    def add(self, lon_list, lat_list, z_list, label=None, description=None, colorbar=jet, radius=None,
+            relativeToGround=False, display_name='MeasSeries', visibility=True):
         """Add a measurement series to the bar graph. lon_list is a list with N longitudes, lat_list a list with N latitudes,
         and z_list a list of N altitudes. You may specify a custom cylinder radius of radius longitude degrees.
         """
-        folder = Folder(name=display_name)
+        folder = Folder(name=display_name, visibility=visibility)
         self.kml.add(folder)
         if radius is None:
             try:
@@ -62,8 +63,14 @@ class Bar3D(chart):
             z   = z_list[i]
             col = _colorbar_color(colorbar, zaxis, z)
             c = circle(center=(lon, lat), radius=(radius / cos(lat), radius))
+            if isinstance(label, (list, tuple)): pname = label[i]
+            else: pname = label
+            if isinstance(description, (list, tuple)): pdesc = description[i]
+            else: pdesc = description
             folder.add(
                 Placemark(
+                    name=pname,
+                    description=pdesc,
                     style=[
                         PolyStyle(
                             color='ff%02x%02x%02x' % (col[2], col[1], col[0]),    # attention, color format aabbggrr (alpha, blue, green, red)
@@ -78,14 +85,14 @@ class Bar3D(chart):
 class Surface(chart):
     """Generate a surface plot.
     """
-    def add(self, corner_point_tuple_list, value_list, colorbar=jet, border_color=None, border_width=1, opacity=0xff, border_opacity=None,
-            display_name='MeasSeries'):
+    def add(self, corner_point_tuple_list, value_list, label=None, description=None, colorbar=jet, border_color=None,
+            border_width=1, opacity=0xff, border_opacity=None, display_name='MeasSeries', visibility=True):
         """Add a measurement series to the surface plot. corner_point_tuple_list is a list of polygon corner points of the form
         ((lon1, lat1), (lon2, lat2), ...) with N elements (meaning a list with N polygons described by M points (tuples), consisting
         of two coordinates (lon, lat). Example: [((poly1_lon1, poly1_lat1), (poly1_lon2, poly1_lon2), (poly1_lon3, poly1_lon3)),
         ((poly2_lon1, ...))])
         """
-        folder = Folder(name=display_name)
+        folder = Folder(name=display_name, visibility=visibility)
         self.kml.add(folder)
         if border_opacity is None:
             border_opacity = opacity
@@ -107,8 +114,12 @@ class Surface(chart):
                         width=border_width,
                     )
                 )
+            if isinstance(label, (list, tuple)): pname = label[i]
+            else: pname = label
+            if isinstance(description, (list, tuple)): pdesc = description[i]
+            else: pdesc = description
             folder.add(
-                Placemark(style=styles).add(
+                Placemark(style=styles, name=pname, description=pdesc).add(
                         Polygon(coordinates)
                     )
                 )
@@ -117,6 +128,8 @@ class Surface(chart):
 def _colorbar_color(colorbar, caxis, c):
     caxis = (min(caxis), max(caxis))
     col = int(len(colorbar) * (float(c) - caxis[0]) / (caxis[1] - caxis[0])) if caxis[1] > caxis[0] else 0
+    if col < 0:
+        col = 0
     if col >= len(colorbar):
         col = len(colorbar) - 1
     return colorbar[col]

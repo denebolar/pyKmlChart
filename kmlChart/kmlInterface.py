@@ -168,7 +168,7 @@ class Folder(Placemark):
 
 
 class KMLdata(ShapeInterface):
-    def __init__(self, styles=None, name=None, description=None):
+    def __init__(self, styles=None, name=None, description=None, visibility=True):
         """Class to produce the actual KML output.
         """
         super(KMLdata, self).__init__()
@@ -176,7 +176,7 @@ class KMLdata(ShapeInterface):
         self.settings = {
             'name': name,
             'open': 0,
-            'visibility': 1,
+            'visibility': 1 if visibility else 0,
             'description': description,
         }
 
