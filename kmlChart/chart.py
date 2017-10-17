@@ -56,11 +56,14 @@ class Bar3D(chart):
                 radius = 0.8 * min(filter(lambda x: x > 0, diff(lon_list)))
             except ValueError:
                 raise Exception('Radius cannot be determined, please specify one.')
-        zaxis = (min(z_list), max(z_list))
+        z_list_noNone = filter(lambda x: x is not None, z_list)
+        zaxis = (min(z_list_noNone), max(z_list_noNone))
         for i in xrange(len(lon_list)):
             lat = lat_list[i]
             lon = lon_list[i]
             z   = z_list[i]
+            if z is None:
+                continue    # equal to NaN, skip this value
             col = _colorbar_color(colorbar, zaxis, z)
             c = circle(center=(lon, lat), radius=(radius / cos(lat), radius))
             if isinstance(label, (list, tuple)): pname = label[i]
@@ -96,10 +99,13 @@ class Surface(chart):
         self.kml.add(folder)
         if border_opacity is None:
             border_opacity = opacity
-        zaxis = (min(value_list), max(value_list))
+        value_noNone = filter(lambda x: x is not None, value_list)
+        zaxis = (min(value_noNone), max(value_noNone))
         for i in xrange(len(value_list)):
             coordinates = corner_point_tuple_list[i]
             z   = value_list[i]
+            if z is None:
+                continue    # equal to NaN, skip this value
             col = _colorbar_color(colorbar, zaxis, z)
             styles = [
                 PolyStyle(
