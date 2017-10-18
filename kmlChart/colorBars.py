@@ -13,7 +13,7 @@ def _inflate_colorbar(cbar, numColors):
         if c_frac < 1e-5:
             newBar[i] = cbar[c_int]
         else:
-            newBar[i] = tuple(cbar[c_int][k] * (1 - c_frac) + cbar[c_int + 1][k] * c_frac for k in xrange(len(cbar[c_int])))
+            newBar[i] = tuple(int(cbar[c_int][k] * (1 - c_frac) + cbar[c_int + 1][k] * c_frac) for k in xrange(len(cbar[c_int])))
     return newBar
 
 
