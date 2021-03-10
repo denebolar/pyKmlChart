@@ -167,6 +167,15 @@ class Folder(Placemark):
         return instance.__class__ == KMLdata
 
 
+class ScreenOverlay(AbstractShape):
+    def __init__(self, href, name=None, description=None, shapeID=None):
+        AbstractShape.__init__(self, shapeID=shapeID)
+        self.settings = {
+            'name': name,
+            'description': description,
+        }
+
+
 class KMLdata(ShapeInterface):
     def __init__(self, styles=None, name=None, description=None, visibility=True):
         """Class to produce the actual KML output.

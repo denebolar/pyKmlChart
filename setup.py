@@ -10,7 +10,7 @@ setup(
     #platform = "linux"
 
     # Version number
-    version = "0.1.0",
+    version = "0.2.0",
 
     # Application author details
     author = "Hendrik Millner",
@@ -40,6 +40,7 @@ setup(
 
     # Dependent packages (distributions)
     install_requires = [
+        'Pillow'
     ],
 
     # Entry points
