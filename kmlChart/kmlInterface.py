@@ -90,10 +90,14 @@ class AbstractShape(ShapeInterface):
         ShapeInterface.render(self, xml)
 
 
-class LineString(object):
+class LineString(AbstractShape):
     TAG = 'LineString'
 
-    def __init__(self, coordinateTuples):
+    def __init__(self, coordinateTuples, tessellate=True, shapeID=None):
+        AbstractShape.__init__(self, shapeID=shapeID)
+        self.settings = {
+            'tessellate': 1 if tessellate else 0,
+        }
         self.coordinates = []
         for tup in coordinateTuples:
             if isinstance(tup, (tuple, list)) and len(tup) in (2, 3):
@@ -101,8 +105,11 @@ class LineString(object):
             else:
                 raise ValueError('Tuple %s is no valid coordinate tuple.' % str(tup))
 
-    def render(self, xmlParent):
-        xml = ElementTree.SubElement(xmlParent, self.TAG)
+    def mayBeAddedTo(self, instance):
+        return (instance.__class__ == MultiGeometry) or ((instance.__class__ == Placemark) and len(instance.shapes) < 1)
+
+    def renderNode(self, xml):
+        #xml = ElementTree.SubElement(xmlParent, self.TAG)
         ElementTree.SubElement(xml, 'coordinates').text = ' '.join([','.join((str(value) for value in tup)) for tup in self.coordinates])
 
 
